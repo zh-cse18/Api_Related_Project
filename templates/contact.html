@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>contact</title>
+</head>
+<body>
+{% load crispy_forms_tags %}
+<div class="container">
+
+    <div class="card mb-8">
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{form}}
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+</html>
