@@ -8,10 +8,11 @@ from rest_framework.views import APIView
 from contacts.forms import ContactForm
 from contacts.models import Contacts
 from contacts.serializers import ContactSerializers
+import requests, json
 
 
 class ContactAPIView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     def get(self, request, format=None):
         contact = Contacts.objects.all()
         serializers = ContactSerializers(contact, many=True)
@@ -26,7 +27,7 @@ class ContactAPIView(APIView):
 
 
 class SearchView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     def post(self, request, format=None):
         data = self.request.data
         name = data['name']
@@ -39,11 +40,16 @@ class SearchView(APIView):
 def home(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
-        if form.is_valid():
-            form.save()
-
+        data = form.data
+        url = 'http://127.0.0.1:8000/contact/newContact/'
+        api = requests.post(url=url, data=data)
+        if api:
             return redirect('home')
-
+        try:
+            resp = json.loads(api.text)
+        except:
+            resp = None
+        print(resp)
     else:
         form = ContactForm()
     return render(request, 'contact.html', {'form': form})
