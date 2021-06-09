@@ -28,10 +28,15 @@ class ContactAPIView(APIView):
 
 class SearchView(APIView):
     permission_classes = (permissions.AllowAny,)
+
     def post(self, request, format=None):
+        name ={}
         data = self.request.data
-        name = data['name']
-        queryset = Contacts.objects.all().filter(name=name)
+        if data:
+             name = data['name']
+             queryset = Contacts.objects.all().filter(name=name)
+        else:
+            queryset = Contacts.objects.all()
         serializer = ContactSerializers(queryset, many=True)
 
         return Response(serializer.data)
